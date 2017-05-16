@@ -237,18 +237,3 @@ if __name__ == '__main__':
 
     # Print out a few interesting splits under the main object.
     print_interesting_splits([], obj, path, percents)
-
-
-#################################################################################
-# Temporary test objects.
-
-obj1 = [1, 2, 3]
-obj2 = {'a': 1, 'b': 2, 'c': [1, 2, 3, 4]}
-obj3 = {'a': [{'c': 1, 'd': 2},
-              {'c': 100, 'e': 3},
-              {'c': [1, 2, 3], 'd': 50}],
-        'b': {'d': {'g': 42}}}
-obj4 = [[1, 2, 3], [4, 5], [{'a': 10}, {'a': 20}]]
-obj5 = {}
-
-objs = [obj1, obj2, obj3, obj4, obj5]
