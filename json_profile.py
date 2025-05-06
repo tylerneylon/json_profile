@@ -35,10 +35,10 @@ def steps(obj):
         return {step for subobj in obj for step in steps(subobj)}
 
     if isinstance(obj, list):
-	return [WILDCARD]
+        return [WILDCARD]
 
     if isinstance(obj, dict):
-        return obj.iterkeys()
+        return iter(obj.keys())
 
     return []  # Primitive objects have no steps to iterate.
 
@@ -106,20 +106,20 @@ def find_heaviest_path(obj, obj_size=None):
 
     return [max_step] + sub_path, [max_percent * percent for percent in [1.0] + sub_percents]
 
-def decorated(key, str_prefix=u''):
-    return u'[]' if key == WILDCARD else (str_prefix + unicode(key))
+def decorated(key, str_prefix=''):
+    return '[]' if key == WILDCARD else (str_prefix + str(key))
 
 def progress_bar(percent, length=20):
     done_length = int(percent * length)
-    return u'▓' * (done_length) + u'░' * (length - done_length)
+    return '▓' * (done_length) + '░' * (length - done_length)
 
 def get_path_string(path):
 
     if len(path) == 0:
-        return u'<root>'
+        return '<root>'
 
-    path_str = u''.join(decorated(key, str_prefix=u'.') for key in path)
-    if path_str.startswith(u'.'):
+    path_str = ''.join(decorated(key, str_prefix='.') for key in path)
+    if path_str.startswith('.'):
         path_str = path_str[1:]
 
     return path_str
@@ -156,14 +156,14 @@ def print_interesting_splits(path, obj, heavy_path=None, heavy_percents=None, to
     path_string = get_path_string(path)
     obj_size = size_of_obj(obj)
     main_percent = 100.0 * obj_size / params['main_size']
-    print u'--------------------------------------------------------------------------------'
-    print u'Size of keys at %s [%5.1f%% of total object size]' % (path_string, main_percent)
+    print('--------------------------------------------------------------------------------')
+    print('Size of keys at %s [%5.1f%% of total object size]' % (path_string, main_percent))
     percents = [float(size_of_obj(at(obj, s))) / obj_size for s in steps(obj)]
     for s, percent in zip(steps(obj), percents):
         pieces = ['%30s' % s,
                   progress_bar(percent),
                   '%5.1f%%' % (100.0 * percent)]
-        print u' '.join(pieces)
+        print(' '.join(pieces))
 
     to_print -= 1
     if to_print == 0:
@@ -203,7 +203,7 @@ def shortened_path_and_percents(path, percents):
 
             i += 1
 
-        short_paths.append(u'.'.join(short_path))
+        short_paths.append('.'.join(short_path))
         short_percents.append(short_percent)
 
         i += 1
@@ -214,18 +214,16 @@ def shortened_path_and_percents(path, percents):
 if __name__ == '__main__':
 
     if len(sys.argv) < 2:
-        print __doc__
+        print(__doc__)
         sys.exit(2)
-
-    sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
 
     with open(sys.argv[1]) as f:
         obj = json.load(f)
 
     obj_size = size_of_obj(obj)
 
-    print u'--------------------------------------------------------------------------------'
-    print u'Heaviest path:'
+    print('--------------------------------------------------------------------------------')
+    print('Heaviest path:')
     path, percents = find_heaviest_path(obj, obj_size)
     path, percents = shortened_path_and_percents(path, percents)
 
@@ -233,7 +231,7 @@ if __name__ == '__main__':
         pieces = ['%30s' % key,
                   progress_bar(percent),
                   '%5.1f%%' % (100.0 * percent)]
-        print u' '.join(pieces)
+        print(' '.join(pieces))
 
     # Print out a few interesting splits under the main object.
     print_interesting_splits([], obj, path, percents)
